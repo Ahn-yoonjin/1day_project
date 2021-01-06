@@ -1,0 +1,123 @@
+import random
+import time
+# Initial Steps to invite in the game:
+print("안윤진이 만든 행맨 게임에 오신 걸 환영합니다!")
+name = input("이름을 입력하세요 :")
+print("안녕하세요 " + name + "! 행운을 빕니다")
+time.sleep(2)
+print("게임이 시작하려합니다! \n 행맨을 플레이해봅시다!")
+time.sleep(3)
+
+def main():
+    global count
+    global display
+    global word
+    global already_guessed
+    global length
+    global play_game
+    words_to_guess = ["january","border","image","film","promise","kids","lungs","doll","rhyme","damage","plants"]
+    word = random.choice(words_to_guess)
+    length = len(word)
+    count = 0
+    display = '_' * length
+    already_guessed = []
+    play_game = ""
+
+def play_loop():
+    global play_game
+    play_game = input("Do You want to play again? y = yes, n = no \n")
+    while play_game not in ["y", "n","Y","N"]:
+        play_game = input("Do You want to play again? y = yes, n = no \n")
+    if play_game == "y":
+        main()
+    elif play_game == "n":
+        print("플레이해주셔서 감사합니다! 다음에 뵙길 바라겠습니다!")
+        exit()
+
+# Initializing all the conditions required for the game:
+def hangman():
+    global count
+    global display
+    global word
+    global already_guessed
+    global play_game
+    limit = 5
+    guess = input("이것이 행맨 단어입니다: " + display + " 추측한 문자를 입력하세요: \n")
+    guess = guess.strip()
+    if len(guess.strip()) == 0 or len(guess.strip()) >= 2 or guess <= "9":
+        print("유효하지 않은 입력입니다, 문자 하나를 시도해보세요 \n")
+        hangman()
+
+    elif guess in word:
+        already_guessed.extend([guess])
+        index = word.find(guess)
+        word = word[:index] + "_" + word[index + 1:]
+        display = display[:index] + guess + display[index + 1:]
+        print(display + "\n")
+    elif guess in already_guessed:
+        print("다른 문자를 시도해보세요.\n")
+    else:
+        count += 1
+        if count == 1:
+            time.sleep(1)
+            print("   _____ \n"
+                  "  |      \n"
+                  "  |      \n"
+                  "  |      \n"
+                  "  |      \n"
+                  "  |      \n"
+                  "__|__\n")
+            print("틀린 추리입니다 " + str(limit - count) + " 번의 추리기회가 남았습니다\n")
+        elif count == 2:
+            time.sleep(1)
+            print("   _____ \n"
+                  "  |     | \n"
+                  "  |     |\n"
+                  "  |      \n"
+                  "  |      \n"
+                  "  |      \n"
+                  "  |      \n"
+                  "__|__\n")
+            print("틀린 추리입니다 " + str(limit - count) + " 번의 추리기회가 남았습니다\n")
+        elif count == 3:
+           time.sleep(1)
+           print("   _____ \n"
+                 "  |     | \n"
+                 "  |     |\n"
+                 "  |     | \n"
+                 "  |      \n"
+                 "  |      \n"
+                 "  |      \n"
+                 "__|__\n")
+           print("틀린 추리입니다 " + str(limit - count) + " 번의 추리기회가 남았습니다\n")
+        elif count == 4:
+            time.sleep(1)
+            print("   _____ \n"
+                  "  |     | \n"
+                  "  |     |\n"
+                  "  |     | \n"
+                  "  |     O \n"
+                  "  |      \n"
+                  "  |      \n"
+                  "__|__\n")
+            print("틀린 추리입니다. 마지막 추리기회가 남았습니다\n")
+        elif count == 5:
+            time.sleep(1)
+            print("   _____ \n"
+                  "  |     | \n"
+                  "  |     |\n"
+                  "  |     | \n"
+                  "  |     O \n"
+                  "  |    /|\ \n"
+                  "  |    / \ \n"
+                  "__|__\n")
+            print("틀렸습니다. 당신은 매달렸습니다!!!\n")
+            print("단어는:",already_guessed,word)
+            play_loop()
+    if word == '_' * length:
+        print("축하합니다!단어를 정확히 맞췄습니다!")
+        play_loop()
+    elif count != limit:
+        hangman()
+main()
+hangman()
